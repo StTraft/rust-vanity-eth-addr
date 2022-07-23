@@ -1,0 +1,15 @@
+[package]
+name = "vanity_rust"
+version = "0.1.0"
+authors = ["GG <gg.is.not.working@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+secp256k1 = { version = "0.24.0", features = ["std", "recovery"]}
+cryptoxide = "0.4.2"
+rand = "0.5"
+hex = "0.4.3"
+regex = "1"
+clap = { version = "3.2.14", features = ["derive"] }
