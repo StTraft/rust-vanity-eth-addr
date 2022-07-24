@@ -15,6 +15,8 @@ struct Cli {
   start: String,
   #[clap(short, long, value_parser, default_value = "")]
   end: String,
+  #[clap(short, long, value_parser, default_value = "4")]
+  threads: i8,
 }
 
 fn gen_pair(engine: &Secp256k1<secp256k1::All>) -> (String, String) {
@@ -72,18 +74,15 @@ fn main() {
     // "^(000|0a0|111|1ce|888|8a8|bad|bed|bee|ace|dad|ca7|d09)",
   )
   .unwrap();
-  println!("Checking address...");
   let re = Arc::new(_re);
-  let re_1 = re.clone();
-  let re_2 = re.clone();
-  let re_3 = re.clone();
-  let re_4 = re.clone();
-  let t_1 = thread::spawn(move || handling(re_1));
-  let t_2 = thread::spawn(move || handling(re_2));
-  let t_3 = thread::spawn(move || handling(re_3));
-  let t_4 = thread::spawn(move || handling(re_4));
-  t_1.join().unwrap();
-  t_2.join().unwrap();
-  t_3.join().unwrap();
-  t_4.join().unwrap();
+  let mut threads = Vec::new();
+  println!("Checking address...");
+  for _ in 0..args.threads {
+    let re = Arc::clone(&re);
+    let t = thread::spawn(move || handling(re));
+    threads.push(t);
+  }
+  for t in threads {
+    t.join().unwrap();
+  }
 }
